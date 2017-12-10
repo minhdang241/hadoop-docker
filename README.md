@@ -60,7 +60,7 @@ Then you can update Namenode default address in core-site.xml:
 </configuration>
 ```
 
-##Building images
+## Building images
 
 And then you can build images with following command:
 
@@ -73,7 +73,7 @@ sudo docker build -t datanode:0.2 .
 
 For connectivity and web interface access I am using here MACVLAN virtualisation so it allows me to set my local network IP to the container and allows access to Hadoop web interfaces easily. 
 
-##Network configuration
+## Network configuration
 
 create MACVLAN network/interface
 
@@ -81,7 +81,7 @@ create MACVLAN network/interface
 sudo docker network create -d macvlan     --subnet=192.168.1.0/24     --gateway=192.168.1.1      -o parent=eth0 pubnet
 ```
 
-##Starting the cluster
+## Starting the cluster
 
 Run Namenode with static IP and bind local path to persist fsimage file for reloads
 ```
@@ -113,6 +113,7 @@ And Yarn (Resource Manager) on
 http://192.168.1.5:8088/cluster/cluster
 ```
 
+## NOTEs
 
 Please note that above URLs will only work if you try to access it from different host. i.e. not from host machine where docker runs!
 
