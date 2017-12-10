@@ -118,11 +118,10 @@ Please note that above URLs will only work if you try to access it from differen
 
 See notes on  MACVLAN documentation on [docker docs](https://docs.docker.com/engine/userguide/networking/get-started-macvlan/#macvlan-bridge-mode-example-usage)
 
-But you can fix it using suggested solution on that page. But there is a small issue on that example. I have already submitted [pull request to fix it on official documentation](https://github.com/docker/docker.github.io/pull/5394).
+But you can fix it using suggested solution on that page i.e. replace you host's network interface with MACVLAN interface. See note: [Communication with the Docker host over macvlan]
+(https://docs.docker.com/engine/userguide/networking/get-started-macvlan/#macvlan-bridge-mode-example-usage)
 
 
-
-Enjoy!
 
 
 
