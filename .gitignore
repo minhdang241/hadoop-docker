@@ -1,0 +1,6 @@
+hadoop-2.8.2.tar.gz
+hadoop-2.8.2/
+**bak/
+DataNode/hadoop-2.8.2.tar.gz
+NameNode/hadoop-2.8.2.tar.gz
+NameNode/namenodedata/*
