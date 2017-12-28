@@ -49,7 +49,9 @@ WORKDIR /bin/
 RUN echo "Host *"  >>/root/.ssh/config
 RUN echo "StrictHostKeyChecking no" >> /root/.ssh/config
 
-RUN echo "test"
+ENV HADOOP_HOME=/usr/local/hadoop/
+ENV HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
+
 ADD bootstrap.sh /bin/
 RUN chmod +x bootstrap.sh
 
@@ -64,9 +66,11 @@ RUN mkdir -p /usr/data/hdfs/datanode/
 RUN mkdir -p /tmp/hadoop-root/dfs/name
 #RUN /usr/local/hadoop/bin/hdfs namenode -format
 
+
+
 EXPOSE 50020 50090 50070 50010 50075 8030 8031 8032 8033 8040 8042 49707 22 8088 9870 9000
 
-EXPOSE 38767
+EXPOSE 10020 38767
 
 #Debug
 

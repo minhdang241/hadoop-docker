@@ -11,8 +11,12 @@ cd /usr/local/hadoop/sbin/
 #./start-dfs.sh
 #./start-yarn.sh
 
-./hadoop-daemon.sh  --script hdfs start namenode
+export HADOOP_HOME=/usr/local/hadoop/
+export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
 
+./hadoop-daemon.sh  --script hdfs start namenode
+./start-yarn.sh
+./mr-jobhistory-daemon.sh --config $HADOOP_CONF_DIR start historyserver
 cd ~
 
 /bin/bash
