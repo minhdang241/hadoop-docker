@@ -4,7 +4,7 @@
 ## This project contains two Dockerfiles to builds Hadoop Namenode and Datanodes.
 This is very similar to my other repositury that builds and runs [Hadoop on a single container](https://github.com/khalidmammadov/single_node_hadoop_docker) 
 
-##Overview
+## Overview
 
 In this article I will set up distributed Hadoop cluster based on Docker containers. For networking I will use user defined BRIDGE network that will segregate the cluster and will allow easy communication between nodes.
 Set up
@@ -22,7 +22,7 @@ wget http://apache.mirror.anlx.net/hadoop/common/hadoop-2.8.2/hadoop-2.8.2.tar.g
 cp hadoop-2.8.2.tar.gz NameNode
 cp hadoop-2.8.2.tar.gz DataNode
 ```
-##Make changes in configurations (Optional)
+## Make changes in configurations (Optional)
 
 Set Hadoop to distributed mode and replication factor and update Namenode fsimage path in hdfs-site.xml file:
 
@@ -69,7 +69,7 @@ Then update Namenode’s Container address (this will be defined during containe
 
 </configuration>
 ```
-#Building images
+## Building images
 
 Now you can build images with following commands:
 ```
@@ -78,7 +78,7 @@ sudo docker build -t namenode:0.1 .
 cd ../DataNode
 sudo docker build -t datanode:0.1 .
 ```
-#Starting the cluster
+## Starting the cluster
 
 Run Namenode with specific name as that one set up for Datanodes to point at and bind local path to persist fsimage file for reloads
 ```
@@ -110,7 +110,7 @@ khalid@ubuntu:~/docker/hadoop_dist.img$ docker network inspect hadoop.net
 }
 },
 ```
-#Checking
+## Checking
 
 Then you can access NameNode info on that address like so:
 ```
