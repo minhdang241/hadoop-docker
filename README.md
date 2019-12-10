@@ -2,18 +2,30 @@
 
 
 ## This project contains two Dockerfiles to builds Hadoop Namenode and Datanodes.
-This is very similar to my other repositury that builds and runs [Hadoop on a single container](https://github.com/feorean/single_node_hadoop_docker) 
+This is very similar to my other repositury that builds and runs [Hadoop on a single container](https://github.com/khalidmammadov/single_node_hadoop_docker) 
 
-NOTE: I have not included hadoop instalation file as it big (too big for image rebuilds). But you can download it from [Apache web site](http://hadoop.apache.org/releases.html).
+##Overview
 
-Dowload and save hadoop to the subfolders, one per directory (e.g. NameNode/hadoop-2.8.2.tar.gz and DataNode/hadoop-2.8.2.tar.gz). 
+In this article I will set up distributed Hadoop cluster based on Docker containers. For networking I will use user defined BRIDGE network that will segregate the cluster and will allow easy communication between nodes.
+Set up
 
-I am using 2.8.2 version but feel free to download the other version and don't forget to update Dockerfile respectevely.
+First clone repository I have created for this article:
+```
+cd ~
+mkdir hadoop_dist
+cd hadoop_dist
+git clone https://github.com/khalidmammadov/hadoop_dist_docker.git
+```
+Dowload and save hadoop to the subfolders, one per directory (e.g. NameNode/hadoop-2.8.2.tar.gz and DataNode/hadoop-2.8.2.tar.gz). I am using 2.8.2 version but feel free to download the other version and don’t forget to update Dockerfile respectevely.
+```
+wget http://apache.mirror.anlx.net/hadoop/common/hadoop-2.8.2/hadoop-2.8.2.tar.gz
+cp hadoop-2.8.2.tar.gz NameNode
+cp hadoop-2.8.2.tar.gz DataNode
+```
+##Make changes in configurations (Optional)
 
-There are few important changes needs to be done if there is a need to change below addresses i.e. IP's or PORTS
-(NOTE: below chnages neeeds to be done both Namenode and Datanodes)
+Set Hadoop to distributed mode and replication factor and update Namenode fsimage path in hdfs-site.xml file:
 
-Set Hadoop to distributed mode and update Namenode fsimage path in hdfs-site.xml file:
 ```
 <configuration>
 
@@ -40,10 +52,8 @@ Set Hadoop to distributed mode and update Namenode fsimage path in hdfs-site.xml
 
 
 </configuration>
-
 ```
-
-Then you can update Namenode default address in core-site.xml:
+Then update Namenode’s Container address (this will be defined during container’s run-time) on  in core-site.xml:
 ```
 <configuration>
 
@@ -54,73 +64,66 @@ Then you can update Namenode default address in core-site.xml:
 
     <property>
         <name>fs.defaultFS</name>
-        <value>hdfs://192.168.1.5:9000</value>
+        <value>hdfs://namenode:9000</value>
     </property>
 
 </configuration>
 ```
+#Building images
 
-## Building images
-
-And then you can build images with following command:
-
+Now you can build images with following commands:
 ```
 cd NameNode
-sudo docker build -t namenode:0.2 .
+sudo docker build -t namenode:0.1 .
 cd ../DataNode
-sudo docker build -t datanode:0.2 .
+sudo docker build -t datanode:0.1 .
 ```
+#Starting the cluster
 
-For connectivity and web interface access I am using here MACVLAN virtualisation so it allows me to set my local network IP to the container and allows access to Hadoop web interfaces easily. 
-
-## Network configuration
-
-create MACVLAN network/interface
-
-```
-sudo docker network create -d macvlan     --subnet=192.168.1.0/24     --gateway=192.168.1.1      -o parent=eth0 pubnet
-```
-
-## Starting the cluster
-
-Run Namenode with static IP and bind local path to persist fsimage file for reloads
+Run Namenode with specific name as that one set up for Datanodes to point at and bind local path to persist fsimage file for reloads
 ```
 docker run \
 	--name namenode \
 	-v  "/home/khalid/docker/hadoop_dist.img/NameNode/namenodedata/:/usr/data/hdfs/namenode/" \
-	-it \
-	--net=pubnet --ip=192.168.1.5 namenode:0.2 
-
+	-dit \
+	--network="hadoop.net" \
+        namenode:0.1 
 ```
-
 Then run few datanodes (7 to be precise)
 ```
-for i in {10..16}
+for i in {1..7}
 do  
-  echo "docker run -it -d --net=pubnet --ip=192.168.1.$i datanode:0.2"
+  docker run --name=datanodes$i -dit --network=hadoop.net datanode:0.1
 done
 ```
-
-Then you can access NameNode info on
-
+To check if all up and running we need to obtain IP address of the Namenode. For that we need to run below docker command and look for our container named “namenode” as per below:
 ```
-http://192.168.1.5:50070
-```
+khalid@ubuntu:~/docker/hadoop_dist.img$ docker network inspect hadoop.net 
 
+..."Containers": {
+"8d63c87c6c971304bc32997523bbeb06c81ebaedef2f988b605f276c77cc0971": {
+"Name": "namenode",
+"EndpointID": "a26bc5df1fab8d2df150fc7a59bf6e3b8cbf369ad8ad6dfc93e3a66e1a0e51b1",
+"MacAddress": "02:42:ac:11:00:02",
+"IPv4Address": "172.19.0.2/16",
+"IPv6Address": ""
+}
+},
+```
+#Checking
+
+Then you can access NameNode info on that address like so:
+```
+http://172.19.0.2:50070
+```
 And Yarn (Resource Manager) on
-
 ```
-http://192.168.1.5:8088/cluster/cluster
+http://172.19.0.2:8088/cluster
 ```
-
-## NOTEs
-
-Please note that above URLs will only work if you try to access it from different host. i.e. not from host machine where docker runs!
-
-See notes on  MACVLAN documentation on [docker docs](https://docs.docker.com/engine/userguide/networking/get-started-macvlan/#macvlan-bridge-mode-example-usage)
-
-But you can fix it using suggested solution on that page i.e. replace you host's network interface with MACVLAN interface. See note: [Communication with the Docker host over macvlan](https://docs.docker.com/engine/userguide/networking/get-started-macvlan/#macvlan-bridge-mode-example-usage)
-
+also query the file system:
+```
+hdfs dfs -ls hdfs://172.19.0.2:9000
+```
 
 
 
