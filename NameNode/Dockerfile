@@ -63,7 +63,11 @@ RUN mkdir -p /tmp/hadoop-root/dfs/name
 #EXPOSE 10020 38767
 
 #Expose only required ones
+#UI, HDFS, Web
 EXPOSE 50070 9000 8088
+
+#Yarn UI
+EXPOSE 50030 50060
 
 #Debug
 
