@@ -1,9 +1,5 @@
 # Distributed HADOOP on Docker containers
 
-
-## This project contains two Dockerfiles to builds Hadoop Namenode and Datanodes.
-This is very similar to my other repositury that builds and runs [Hadoop on a single container](https://github.com/khalidmammadov/single_node_hadoop_docker) 
-
 ## Overview
 
 In this article I will set up distributed Hadoop cluster based on Docker containers. For networking I will use user defined BRIDGE network that will segregate the cluster and will allow easy communication between nodes.
@@ -103,34 +99,33 @@ done
 ```
 To check if all up and running we need to obtain IP address of the Namenode. For that we need to run below docker command and look for our container named “namenode” as per below:
 ```
-khalid@ubuntu:~/docker/hadoop_dist.img$ docker network inspect hadoop.net 
-
-..."Containers": {
-"8d63c87c6c971304bc32997523bbeb06c81ebaedef2f988b605f276c77cc0971": {
-"Name": "namenode",
-"EndpointID": "a26bc5df1fab8d2df150fc7a59bf6e3b8cbf369ad8ad6dfc93e3a66e1a0e51b1",
-"MacAddress": "02:42:ac:11:00:02",
-"IPv4Address": "172.19.0.2/16",
-"IPv6Address": ""
-}
-},
-```
-## Checking
-
-Then you can access NameNode info on that address like so:
-```
-http://172.19.0.2:50070
-```
-And Yarn (Resource Manager) on
-```
-http://172.19.0.2:8088/cluster
-```
-also query the file system:
-```
-hdfs dfs -ls hdfs://172.19.0.2:9000
-```
+`~/docker/hadoop_dist.img$ docker network inspect hadoop.net`
 
 
+# HOW TO RUN ON SERVER
+Step1: run namenode container
+```
+docker run \
+        --name namenode \               
+        -v  "/home/minhdang/hadoop_tutorial/hadoop_dist_docker/NameNode/namenodedata/:/usr/data/hdfs/namenode/" \
+        -dit \
+        --network="hadoop.net" \
+        namenode:0.1
+```
 
+Step2: Validate the namenode
+```docker exec -it namenode /bin/bash```
 
+Step3: Run the namenode container and datanode container(s) using docker compose
+```
+docker-compose up --scale datanode=3
+```
 
+1. Check log
+`cd /usr/local/hadoop/logs`
+
+2. Access Resource Manager
+`http://localhost:8088/cluster`
+
+3. Access Web UI
+`http://localhost:9870`
