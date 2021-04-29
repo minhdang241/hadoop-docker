@@ -103,20 +103,8 @@ To check if all up and running we need to obtain IP address of the Namenode. For
 
 
 # HOW TO RUN ON SERVER
-Step1: run namenode container
-```
-docker run \
-        --name namenode \               
-        -v  "/home/minhdang/hadoop_tutorial/hadoop_dist_docker/NameNode/namenodedata/:/usr/data/hdfs/namenode/" \
-        -dit \
-        --network="hadoop.net" \
-        namenode:0.1
-```
+Step1: Run the namenode container and datanode container(s) using docker compose
 
-Step2: Validate the namenode
-```docker exec -it namenode /bin/bash```
-
-Step3: Run the namenode container and datanode container(s) using docker compose
 ```
 docker-compose up --scale datanode=3
 ```
