@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+    namenode:
+        image: namenode:0.1
+        container_name: namenode
+        volumes: 
+            - ./NameNode/namenodedata/:/usr/data/hdfs/namenode
+        networks:
+            - hadoop
+        ports:
+            - "9870:9870"
+            - "8088:8088"
+            - "9000:9000"
+
+    datanode:
+        image: datanode:0.1
+        depends_on:
+            - namenode
+        networks:
+            - hadoop
+
+networks:
+    hadoop:
+        name: hadoop.net
+    

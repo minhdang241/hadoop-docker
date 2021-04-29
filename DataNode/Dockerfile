@@ -13,11 +13,11 @@ ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
 
 
 #Copy hadoop
-COPY hadoop-2.8.2.tar.gz /usr/local/
+COPY hadoop-3.2.2.tar.gz /usr/local/
 WORKDIR /usr/local/
-RUN tar -xf hadoop-2.8.2.tar.gz
-RUN rm hadoop-2.8.2.tar.gz
-RUN ln -s ./hadoop-2.8.2 hadoop
+RUN tar -xf hadoop-3.2.2.tar.gz
+RUN rm hadoop-3.2.2.tar.gz
+RUN ln -s ./hadoop-3.2.2 hadoop
 
 ENV PATH="/usr/local/hadoop/bin:${PATH}"
 
@@ -51,7 +51,7 @@ CMD ["/bin/bootstrap.sh"]
 RUN mkdir -p /usr/data/hdfs/datanode/
 
 RUN mkdir -p /tmp/hadoop-root/dfs/name
-#RUN /usr/local/hadoop/bin/hdfs namenode -format
+RUN /usr/local/hadoop/bin/hdfs namenode -format
 
 
 #Add namenode domain name so data nodes can find it

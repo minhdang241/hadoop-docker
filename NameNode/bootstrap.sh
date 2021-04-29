@@ -11,13 +11,14 @@ cd /usr/local/hadoop/sbin/
 #./start-dfs.sh
 #./start-yarn.sh
 
-export HADOOP_HOME=/usr/local/hadoop/
+export HADOOP_HOME=/usr/local/hadoop
 export HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
 
-./hadoop-daemon.sh  --script hdfs start namenode
+# ${HADOOP_HOME}/bin/hdfs --daemon start namenode
+echo 'N' | /usr/local/hadoop/bin/hdfs namenode -format
+./start-dfs.sh
 ./start-yarn.sh
-./mr-jobhistory-daemon.sh --config $HADOOP_CONF_DIR start historyserver
+${HADOOP_HOME}/bin/mapred --daemon start historyserver
 cd ~
 
-/bin/bash
-
+tail -f /dev/null

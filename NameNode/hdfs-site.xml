@@ -17,10 +17,10 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-
+    <!-- Number of times the data is duplicated on the nodes -->
     <property>
         <name>dfs.replication</name>
-        <value>3</value>
+        <value>2</value>
     </property>
 
     <property>
@@ -32,12 +32,5 @@
         <name>dfs.datanode.data.dir</name>
         <value>/usr/data/hdfs/datanode</value>
     </property>
-
-
-    <property>
-        <name>dfs.blocksize</name>
-        <value>10485760</value>
-    </property>
-
 
 </configuration>

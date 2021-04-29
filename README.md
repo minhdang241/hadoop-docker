@@ -85,6 +85,11 @@ Run Namenode with specific name as that one set up for Datanodes to point at and
 docker run \
 	--name namenode \
 	-v  "/home/khalid/docker/hadoop_dist.img/NameNode/namenodedata/:/usr/data/hdfs/namenode/" \
+    -p 50070:50070 \
+    -p 9000:9000 \
+    -p 8088:8088 \
+    -p 50030:50030 \
+    -p 50060:50060 \
 	-dit \
 	--network="hadoop.net" \
         namenode:0.1 

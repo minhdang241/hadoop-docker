@@ -14,11 +14,11 @@ ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
 
 
 #Copy hadoop
-COPY hadoop-2.8.2.tar.gz /usr/local/
+COPY hadoop-3.2.2.tar.gz /usr/local/
 WORKDIR /usr/local/
-RUN tar -xf hadoop-2.8.2.tar.gz \
-    && rm hadoop-2.8.2.tar.gz \
-    && ln -s ./hadoop-2.8.2 hadoop
+RUN tar -xf hadoop-3.2.2.tar.gz \
+    && rm hadoop-3.2.2.tar.gz \
+    && ln -s ./hadoop-3.2.2 hadoop
 
 ENV PATH="/usr/local/hadoop/bin:${PATH}"
 
@@ -43,6 +43,9 @@ RUN echo "StrictHostKeyChecking no" >> /root/.ssh/config
 ENV HADOOP_HOME=/usr/local/hadoop/
 ENV HADOOP_CONF_DIR=/usr/local/hadoop/etc/hadoop
 
+# Install lsof and curl
+RUN apt-get update -y && apt-get install -y lsof && apt-get install -y curl 
+
 ADD bootstrap.sh /bin/
 RUN chmod +x bootstrap.sh
 
@@ -54,8 +57,9 @@ RUN mkdir -p /usr/data/hdfs/datanode/
 
 RUN mkdir -p /tmp/hadoop-root/dfs/name
 
+
 #Format if necesssary
-#RUN /usr/local/hadoop/bin/hdfs namenode -format
+# RUN /usr/local/hadoop/bin/hdfs namenode -format
 
 
 #Not required to expose everything 
@@ -64,10 +68,10 @@ RUN mkdir -p /tmp/hadoop-root/dfs/name
 
 #Expose only required ones
 #UI, HDFS, Web
-EXPOSE 50070 9000 8088
+EXPOSE 9870 9000 8088
 
 #Yarn UI
-EXPOSE 50030 50060
+# EXPOSE 50030 50060
 
 #Debug
 
