@@ -33,4 +33,9 @@
         <value>/usr/data/hdfs/datanode</value>
     </property>
 
+    <property>
+      <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
+      <value>false</value>
+    </property>
+
 </configuration>
